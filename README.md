@@ -12,7 +12,7 @@ and your development environment perfectly organized.
 ---
 
 <p align="center">
-  <img src="./assets/oprah-meme.png" alt="You get a tree! You get a tree! Everybody gets a tree!" width="500" />
+  <img src="https://github.com/SivaramPg/branchyard/blob/abd7fe45ccd6601551ae61c0cf1cc0117a36eb08/assets/oprah-meme.png?raw=true" alt="You get a tree! You get a tree! Everybody gets a tree!" width="500" />
 </p>
 
 <p align="center"><em>You get a tree! You get a tree! Everybody gets a tree! 🌳</em></p>
