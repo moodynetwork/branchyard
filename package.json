@@ -1,7 +1,32 @@
 {
   "name": "branchyard",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "branchyard — Your shipyard for parallel development workflows. Maintain your digital yard with clean branches, productive workflows, and AI-era readiness.",
+  "author": "Sivaram Pg <dev.sivaramp@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/SivaramPg/branchyard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SivaramPg/branchyard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SivaramPg/branchyard/issues"
+  },
+  "keywords": [
+    "git",
+    "worktree",
+    "git-worktree",
+    "cli",
+    "developer-tools",
+    "productivity",
+    "vscode",
+    "cursor",
+    "windsurf",
+    "zed",
+    "monorepo",
+    "parallel-development",
+    "workspace-management"
+  ],
   "bin": {
     "branchyard": "./src/index.ts"
   },
@@ -12,7 +37,6 @@
     "unlink": "bun unlink",
     "release": "bun publish --access public"
   },
-  "license": "MIT",
   "dependencies": {
     "colorette": "^2.0.20",
     "zod": "^3.22.4"
