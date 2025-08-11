@@ -1,0 +1,26 @@
+{
+  "name": "branchyard",
+  "version": "1.2.0",
+  "description": "branchyard — Your shipyard for parallel development workflows. Maintain your digital yard with clean branches, productive workflows, and AI-era readiness.",
+  "bin": {
+    "branchyard": "./src/index.ts"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "link": "bun link",
+    "unlink": "bun unlink",
+    "release": "bun publish --access public"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "colorette": "^2.0.20",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
