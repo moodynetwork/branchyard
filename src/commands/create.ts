@@ -1,6 +1,6 @@
-import { $, writeFileSync, existsSync } from "bun";
+import { $ } from "bun";
 import path from "node:path";
-import fs from "node:fs";
+import fs, { existsSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { ask, choose, closePrompts } from "../utils/prompts";
 import { getExistingWorktrees, getExistingBranches } from "../utils/git";
