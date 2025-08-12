@@ -18,7 +18,7 @@ const args = process.argv.slice(2);
 
 async function printHelp() {
   console.log(`
-⚓ branchyard v1.2.5
+⚓ branchyard v1.3.0
 Your shipyard for parallel development workflows.
 
 USAGE:
