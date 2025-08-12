@@ -1,7 +1,7 @@
 import { $ } from "bun";
 import { isGitRepo, getRepoRoot, getCurrentBranch } from "./git";
 import { commandExists } from "./system";
-import { colorette } from "colorette";
+import * as colorette from "colorette";
 
 export async function preflightCheck(showInfo: boolean = true, allowSubdir: boolean = false) {
   // Check for Bun (already running if we got here)

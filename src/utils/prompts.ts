@@ -1,10 +1,17 @@
-const decoder = new TextDecoder();
-
 export async function ask(question: string): Promise<string> {
   process.stdout.write(question);
-  const buf = new Uint8Array(1024);
-  const n = await Bun.stdin.stream().reader.read(buf);
-  return decoder.decode(buf.subarray(0, n.value || 0)).trim();
+  
+  // Use the built-in prompt function for simplicity
+  // Note: prompt() prints its own prompt, so we need to adjust
+  // Actually, let's use the iterator approach for more control
+  const stdinIterator = process.stdin.iterator();
+  const result = await stdinIterator.next();
+  
+  if (result.value) {
+    return result.value.toString().trim();
+  }
+  
+  return "";
 }
 
 export async function choose(question: string, options: string[]): Promise<string> {
@@ -15,7 +22,7 @@ export async function choose(question: string, options: string[]): Promise<strin
     const answer = await ask("Enter choice (number): ");
     const num = parseInt(answer);
     if (num >= 1 && num <= options.length) {
-      return options[num - 1];
+      return options[num - 1]!;
     }
     console.log("Invalid choice. Please try again.");
   }
@@ -32,12 +39,12 @@ export async function multiSelect(question: string, options: string[]): Promise<
     return options;
   }
   
-  const selected = [];
+  const selected: string[] = [];
   const nums = answer.split(" ").map(s => parseInt(s.trim()));
   
   for (const num of nums) {
     if (num >= 1 && num <= options.length) {
-      selected.push(options[num - 1]);
+      selected.push(options[num - 1]!);
     }
   }
   
