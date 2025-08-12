@@ -1,11 +1,11 @@
 import { $ } from "bun";
 import path from "node:path";
-import fs, { existsSync, writeFileSync } from "node:fs";
+import fs, { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { ask, choose, closePrompts } from "../utils/prompts";
 import { getExistingWorktrees, getExistingBranches } from "../utils/git";
 import { getConfig, saveConfig, editorCommands } from "../utils/config";
-import { saveSession, getLastSession } from "../utils/sessions";
+import { saveSession, getLastSession, getSession } from "../utils/sessions";
 import { preflightCheck } from "../utils/preflight";
 import { commandExists } from "../utils/system";
 
@@ -48,8 +48,29 @@ export async function runCreate(args: string[]) {
   const existingWorktrees = await getExistingWorktrees();
   const existingBranches = await getExistingBranches();
 
+  // Check for worktrees in old location (parent directory)
+  const oldLocationWorktrees = worktrees.filter(name => existsSync(`../${name}`));
+  if (oldLocationWorktrees.length > 0) {
+    console.log(`\n⚠️  Found worktrees in old location (parent directory):`);
+    oldLocationWorktrees.forEach(name => console.log(`   ../${name}`));
+    console.log(`\n💡 These should be removed with 'git worktree remove' or branchyard v1.2.x`);
+    console.log(`   The new location will be: .worktrees/${oldLocationWorktrees.join(', ')}\n`);
+    
+    const proceed = await ask("Continue with creating worktrees in new location? (y/n): ");
+    if (proceed.toLowerCase() !== 'y') {
+      console.log("Aborted.");
+      closePrompts();
+      return;
+    }
+  }
+
+  // Ensure .worktrees directory exists
+  if (!dryRun && !existsSync('.worktrees')) {
+    await $`mkdir -p .worktrees`;
+  }
+
   async function createWorktree(name: string) {
-    const dir = `../${name}`;
+    const dir = `.worktrees/${name}`;
 
     if (existingWorktrees.some((wt: any) => wt.branch === name)) {
       console.log(`❌ Branch '${name}' is already checked out in another worktree. Skipping.`);
@@ -114,12 +135,30 @@ export async function runCreate(args: string[]) {
 
   // Workspace generation with template merge
   const workspace = {
-    folders: worktrees.map(w => ({ path: `../${w}` })),
+    folders: worktrees.map(w => ({ path: `.worktrees/${w}` })),
     ...(config.workspaceTemplate || {})
   };
+  
+  // Check if workspace file exists and might have old paths
+  if (existsSync("parallel-dev.code-workspace")) {
+    const existingWorkspace = JSON.parse(readFileSync("parallel-dev.code-workspace", "utf-8"));
+    const hasOldPaths = existingWorkspace.folders?.some((f: any) => f.path?.startsWith('../'));
+    if (hasOldPaths) {
+      console.log(`📝 Updating workspace file with new paths (was using ../worktree, now .worktrees/worktree)`);
+    }
+  }
+  
   writeFileSync("parallel-dev.code-workspace", JSON.stringify(workspace, null, 2));
+  console.log(`📝 Created workspace file: parallel-dev.code-workspace`);
 
-  if (openEditor && !dryRun) {
+  // Ask to open workspace if not in dry-run mode and not already specified
+  let shouldOpen = openEditor;
+  if (!dryRun && !openEditor) {
+    const openNow = await ask("Open workspace in editor now? (Y/n): ");
+    shouldOpen = openNow.toLowerCase() !== 'n';
+  }
+
+  if (shouldOpen && !dryRun) {
     const editorCommand = editorCommands[editor];
     if (!editorCommand) {
       console.error(`❌ Unknown editor: ${editor}`);
@@ -129,20 +168,51 @@ export async function runCreate(args: string[]) {
       console.error(`❌ The editor CLI '${editorCommand}' is not installed or not in your PATH.`);
       process.exit(1);
     }
+    console.log(`🚀 Opening workspace in ${editor}...`);
     await $`${editorCommand} parallel-dev.code-workspace`;
+  } else if (!dryRun) {
+    console.log(`\n💡 To open your workspace later, run:`);
+    console.log(`   ${editorCommands[editor] || 'code'} parallel-dev.code-workspace`);
   }
 
   const save = await ask("Do you want to save this setup as a named session? (y/n): ");
   if (save.toLowerCase() === "y") {
     const sessionName = await ask("Enter session name: ");
-    saveSession(sessionName, {
-      worktrees,
-      baseBranch,
-      editor
-    });
-    console.log(`💾 Session '${sessionName}' saved.`);
+    
+    // Check if session already exists
+    const existingSession = getSession(sessionName);
+    if (existingSession) {
+      const overwrite = await ask(`⚠️  Session '${sessionName}' already exists. Overwrite? (y/n): `);
+      if (overwrite.toLowerCase() !== 'y') {
+        console.log("Session not saved.");
+      } else {
+        saveSession(sessionName, {
+          worktrees,
+          baseBranch,
+          editor
+        });
+        console.log(`💾 Session '${sessionName}' updated.`);
+      }
+    } else {
+      saveSession(sessionName, {
+        worktrees,
+        baseBranch,
+        editor
+      });
+      console.log(`💾 Session '${sessionName}' saved.`);
+    }
   }
 
-  console.log(dryRun ? "✅ Dry run complete!" : "✅ Setup complete!");
+  if (dryRun) {
+    console.log("✅ Dry run complete!");
+  } else {
+    console.log("\n✅ Setup complete!");
+    console.log(`📁 Worktrees created in: .worktrees/`);
+    console.log(`📝 Workspace file: parallel-dev.code-workspace`);
+    if (!shouldOpen) {
+      console.log(`\n💡 To start working, open the workspace:`);
+      console.log(`   ${editorCommands[editor] || 'code'} parallel-dev.code-workspace`);
+    }
+  }
   closePrompts();
 }
