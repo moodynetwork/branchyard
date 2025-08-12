@@ -11,7 +11,7 @@ export async function runRemove(args: string[]) {
   const sequential = args.includes("--sequential");
   
   const worktreesToRemove = args.filter(
-    (a) => !a.startsWith("--") && a !== "--remove"
+    (a) => !a.startsWith("--")
   );
 
   if (worktreesToRemove.length === 0) {

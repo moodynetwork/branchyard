@@ -26,7 +26,7 @@ export async function runCreate(args: string[]) {
 
   const cwd =
     args.includes("--cwd") && args[args.indexOf("--cwd") + 1]
-      ? args[args.indexOf("--cwd") + 1]
+      ? args[args.indexOf("--cwd") + 1]!
       : process.cwd();
 
   const worktrees = args.filter(
@@ -102,7 +102,7 @@ export async function runCreate(args: string[]) {
   }
 
   let config = getConfig();
-  let editor = config.defaultEditor;
+  let editor: string = config.defaultEditor || "";
   if (!editor) {
     editor = await choose("Select editor:", Object.keys(editorCommands));
     const remember = await ask("Set this as default editor? (y/n): ");
@@ -120,11 +120,16 @@ export async function runCreate(args: string[]) {
   writeFileSync("parallel-dev.code-workspace", JSON.stringify(workspace, null, 2));
 
   if (openEditor && !dryRun) {
-    if (!(await commandExists(editorCommands[editor]))) {
-      console.error(`❌ The editor CLI '${editorCommands[editor]}' is not installed or not in your PATH.`);
+    const editorCommand = editorCommands[editor];
+    if (!editorCommand) {
+      console.error(`❌ Unknown editor: ${editor}`);
       process.exit(1);
     }
-    await $`${editorCommands[editor]} parallel-dev.code-workspace`;
+    if (!(await commandExists(editorCommand))) {
+      console.error(`❌ The editor CLI '${editorCommand}' is not installed or not in your PATH.`);
+      process.exit(1);
+    }
+    await $`${editorCommand} parallel-dev.code-workspace`;
   }
 
   const save = await ask("Do you want to save this setup as a named session? (y/n): ");
