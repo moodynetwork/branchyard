@@ -185,13 +185,13 @@ branchyard agent-factory upgrades-marketplace --base develop --open
 ### Remove Worktrees
 
 ```bash
-branchyard --remove agent-factory upgrades-marketplace
+branchyard remove agent-factory upgrades-marketplace
 ```
 
 With dry-run:
 
 ```bash
-branchyard --remove agent-factory --dry-run
+branchyard remove agent-factory --dry-run
 ```
 
 ---
@@ -267,7 +267,7 @@ branchyard delete-session sprint-42
 | Task | Raw `git worktree` | branchyard |
 |------|--------------------|------------|
 | Create 2 worktrees | `git worktree add ../foo foo && git worktree add ../bar bar` | `branchyard foo bar` |
-| Remove worktree | `git worktree remove ../foo` | `branchyard --remove foo` |
+| Remove worktree | `git worktree remove ../foo` | `branchyard remove foo` |
 | List worktrees | `git worktree list` | `branchyard list` (with branch, commit, age) |
 | Restore session | *(manual)* | `branchyard restore my-session` |
 

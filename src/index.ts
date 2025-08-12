@@ -6,7 +6,7 @@ import { runList } from "./commands/list";
 import { runPrune } from "./commands/prune";
 import { runInteractive } from "./commands/interactive";
 import { runConfig } from "./commands/config";
-import { getSession, saveSession, listSessions, deleteSession } from "./utils/sessions";
+import { getSession, saveSession, listSessions, deleteSession, getLastSession } from "./utils/sessions";
 import { preflightCheck } from "./utils/preflight";
 import path from "node:path";
 import fs from "node:fs";
@@ -18,13 +18,13 @@ const args = process.argv.slice(2);
 
 async function printHelp() {
   console.log(`
-⚓ branchyard v1.2.3
+⚓ branchyard v1.2.4
 Your shipyard for parallel development workflows.
 
 USAGE:
   branchyard                                    Interactive mode
   branchyard <names...> [flags]                Create worktrees
-  branchyard --remove <names...> [flags]       Remove worktrees
+  branchyard remove <names...> [flags]         Remove worktrees
   branchyard list                              List worktrees
   branchyard prune [--auto] [--dry-run]        Prune orphaned worktrees
   branchyard save-session <name>               Save current session
@@ -47,7 +47,7 @@ FLAGS:
 
 EXAMPLES:
   branchyard feature-x bugfix-y --base develop --open
-  branchyard --remove feature-x bugfix-y
+  branchyard remove feature-x bugfix-y
   branchyard restore sprint-42
 `);
 }
@@ -77,6 +77,10 @@ async function main() {
   switch (command) {
     case "list":
       await runList();
+      break;
+
+    case "remove":
+      await runRemove(args.slice(1));
       break;
 
     case "prune":
@@ -139,11 +143,7 @@ async function main() {
       break;
 
     default:
-      if (args.includes("--remove")) {
-        await runRemove(args);
-      } else {
-        await runCreate(args);
-      }
+      await runCreate(args);
   }
 }
 
