@@ -186,6 +186,13 @@ branchyard agent-factory upgrades-marketplace --base develop --open
 
 ```bash
 branchyard remove agent-factory upgrades-marketplace
+# Prompts: "Also delete the git branches? (y/N):"
+```
+
+Auto-delete branches without prompting:
+
+```bash
+branchyard remove agent-factory --delete-branch
 ```
 
 With dry-run:
@@ -256,6 +263,7 @@ branchyard delete-session sprint-42
 | `--cwd <path>`   | Path to main repo (default: current directory) |
 | `--dry-run`      | Show what would happen without making changes |
 | `--force`        | Overwrite existing folders (requires double confirmation) |
+| `--delete-branch`| Auto-delete git branches without prompting when removing worktrees |
 | `--allow-subdir` | Allow running from a subfolder in a monorepo without warning |
 | `--fun`          | Trigger Easter egg output |
 | `--sequential`   | Run operations sequentially instead of in parallel |

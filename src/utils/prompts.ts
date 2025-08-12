@@ -1,17 +1,7 @@
 export async function ask(question: string): Promise<string> {
-  process.stdout.write(question);
-  
-  // Use the built-in prompt function for simplicity
-  // Note: prompt() prints its own prompt, so we need to adjust
-  // Actually, let's use the iterator approach for more control
-  const stdinIterator = process.stdin.iterator();
-  const result = await stdinIterator.next();
-  
-  if (result.value) {
-    return result.value.toString().trim();
-  }
-  
-  return "";
+  // Use Bun's built-in prompt which handles cleanup automatically
+  const answer = prompt(question);
+  return answer || "";
 }
 
 export async function choose(question: string, options: string[]): Promise<string> {
@@ -52,5 +42,8 @@ export async function multiSelect(question: string, options: string[]): Promise<
 }
 
 export function closePrompts() {
-  // Placeholder for any cleanup needed
+  // Ensure stdin is closed to prevent hanging
+  if (process.stdin.isTTY) {
+    process.stdin.pause();
+  }
 }

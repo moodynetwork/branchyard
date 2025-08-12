@@ -1,6 +1,6 @@
 {
   "name": "branchyard",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "branchyard — Your shipyard for parallel development workflows. Maintain your digital yard with clean branches, productive workflows, and AI-era readiness.",
   "author": "Sivaram P <dev.sivaramp@gmail.com>",
   "license": "MIT",

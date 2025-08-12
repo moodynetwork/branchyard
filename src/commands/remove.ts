@@ -9,6 +9,7 @@ export async function runRemove(args: string[]) {
   const dryRun = args.includes("--dry-run");
   const force = args.includes("--force");
   const sequential = args.includes("--sequential");
+  let deleteBranch = args.includes("--delete-branch");
   
   const worktreesToRemove = args.filter(
     (a) => !a.startsWith("--")
@@ -33,6 +34,12 @@ export async function runRemove(args: string[]) {
     console.log("No worktrees selected.");
     closePrompts();
     return;
+  }
+
+  // Ask about branch deletion if not already specified
+  if (!deleteBranch && !dryRun) {
+    const answer = await ask("Also delete the git branches? (y/N): ");
+    deleteBranch = answer.toLowerCase() === 'y';
   }
 
   if (force) {
@@ -62,10 +69,22 @@ export async function runRemove(args: string[]) {
 
     if (dryRun) {
       console.log(`[DRY-RUN] Would remove worktree: ${name} at ${worktree.path}`);
+      if (deleteBranch) {
+        console.log(`[DRY-RUN] Would delete branch: ${name}`);
+      }
     } else {
       console.log(`🗑 Removing worktree: ${name}`);
       const forceFlag = force ? "--force" : "";
       await $`git worktree remove ${forceFlag} ${worktree.path}`;
+      
+      if (deleteBranch) {
+        console.log(`🗑 Deleting branch: ${name}`);
+        try {
+          await $`git branch -D ${name}`;
+        } catch (error) {
+          console.log(`⚠️ Could not delete branch '${name}'. It might be checked out elsewhere or protected.`);
+        }
+      }
     }
   }
 
@@ -81,6 +100,10 @@ export async function runRemove(args: string[]) {
     await Promise.all(worktreesToRemove.map(name => removeWorktree(name)));
   }
 
-  console.log(dryRun ? "✅ Dry run complete!" : "✅ Worktrees removed!");
+  if (dryRun) {
+    console.log("✅ Dry run complete!");
+  } else {
+    console.log(deleteBranch ? "✅ Worktrees and branches removed!" : "✅ Worktrees removed!");
+  }
   closePrompts();
 }

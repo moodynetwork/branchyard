@@ -18,7 +18,7 @@ const args = process.argv.slice(2);
 
 async function printHelp() {
   console.log(`
-⚓ branchyard v1.2.4
+⚓ branchyard v1.2.5
 Your shipyard for parallel development workflows.
 
 USAGE:
@@ -40,6 +40,7 @@ FLAGS:
   --cwd <path>       Main repo path
   --dry-run          Preview changes
   --force            Overwrite existing folders
+  --delete-branch    Auto-delete git branches without prompting
   --allow-subdir     Allow running from subdir
   --sequential       Run operations sequentially
   --fun              Trigger Easter egg
@@ -48,6 +49,7 @@ FLAGS:
 EXAMPLES:
   branchyard feature-x bugfix-y --base develop --open
   branchyard remove feature-x bugfix-y
+  branchyard remove feature-x --delete-branch
   branchyard restore sprint-42
 `);
 }
